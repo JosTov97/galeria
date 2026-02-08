@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Galería</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0ec 100%);
+            min-height: 100vh;
+            color: #5a3d44;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #d63384;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .subtitulo {
+            font-style: italic;
+            color: #8b5a6b;
+            font-size: 1.2em;
+        }
+
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+
+        .foto-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .foto-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(214, 51, 132, 0.25);
+        }
+
+        .foto-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .foto-info {
+            padding: 20px;
+        }
+
+        .foto-titulo {
+            font-size: 1.3em;
+            color: #d63384;
+            margin-bottom: 8px;
+        }
+
+        .foto-desc {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        .foto-fecha {
+            display: inline-block;
+            background: #ffe0ec;
+            color: #d63384;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .favorita {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .favorita:hover {
+            transform: scale(1.2);
+        }
+
+        .nav-links {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .nav-links a {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 12px 25px;
+            background: #d63384;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: #b52a6f;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #8b5a6b;
+            font-style: italic;
+        }
+
+        .corazon {
+            color: #d63384;
+            animation: latido 1.5s infinite;
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .vacio {
+            text-align: center;
+            padding: 60px;
+            color: #8b5a6b;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .galeria { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Nuestra Galería <span class="corazon">❤️</span></h1>
+        <p class="subtitulo">Cada foto es un recuerdo de nuestro amor</p>
+    </header>
+
+    <div class="nav-links">
+        <a href="/admin">✨ Subir Nueva Foto</a>
+    </div>
+
+    <div class="galeria" th:if="${not #lists.isEmpty(fotos)}">
+        <div th:each="foto : ${fotos}" class="foto-card">
+            <img th:src="@{/uploads/{nombre}(nombre=${foto.archivoNombre})}"
+                 th:alt="${foto.titulo}">
+
+            <form th:action="@{/favorita/{id}(id=${foto.id})}" method="post" style="display:inline;">
+                <button type="submit" class="favorita"
+                        th:text="${foto.esFavorita} ? '❤️' : '🤍'"
+                        title="Marcar como favorita"></button>
+            </form>
+
+            <div class="foto-info">
+                <h3 class="foto-titulo" th:text="${foto.titulo}">Título</h3>
+                <p class="foto-desc" th:text="${foto.descripcion}">Descripción</p>
+                <span class="foto-fecha"
+                      th:if="${foto.fechaCaptura != null}"
+                      th:text="${#temporals.format(foto.fechaCaptura, 'dd MMM yyyy')}">
+                        Fecha
+                    </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="vacio" th:if="${#lists.isEmpty(fotos)}">
+        <p>💕 Aún no hay fotos. ¡Sube la primera!</p>
+    </div>
+
+    <footer>
+        <p>Hecho con <span class="corazon">❤️</span> para ti</p>
+    </footer>
+</div>
+</body>
+</html>
