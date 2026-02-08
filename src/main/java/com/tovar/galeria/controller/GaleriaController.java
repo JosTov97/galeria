@@ -119,7 +119,7 @@ public class GaleriaController {
     @PostMapping("/favorita/{id}")
     public String marcarFavorita(@PathVariable Long id) {
         fotoRepository.findById(id).ifPresent(foto -> {
-            foto.setEsFavorita(!foto.getEsFavorita());
+            foto.setEsFavorita(!Boolean.TRUE.equals(foto.getEsFavorita()));
             fotoRepository.save(foto);
         });
         return "redirect:/";

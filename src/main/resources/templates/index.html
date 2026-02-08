@@ -157,6 +157,43 @@
             font-size: 1.2em;
         }
 
+        /* BOTONES DE ACCIÓN */
+        .acciones {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-editar {
+            background: #d63384;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .btn-editar:hover {
+            background: #b52a6f;
+        }
+
+        .btn-eliminar {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .btn-eliminar:hover {
+            background: #c82333;
+        }
+
         @media (max-width: 768px) {
             h1 { font-size: 2em; }
             .galeria { grid-template-columns: 1fr; }
@@ -181,7 +218,7 @@
 
             <form th:action="@{/favorita/{id}(id=${foto.id})}" method="post" style="display:inline;">
                 <button type="submit" class="favorita"
-                        th:text="${foto.esFavorita} ? '❤️' : '🤍'"
+                        th:text="${foto.esFavorita != null && foto.esFavorita} ? '❤️' : '🤍'"
                         title="Marcar como favorita"></button>
             </form>
 
@@ -193,6 +230,20 @@
                       th:text="${#temporals.format(foto.fechaCaptura, 'dd MMM yyyy')}">
                         Fecha
                     </span>
+
+                <!-- BOTONES -->
+                <div class="acciones">
+                    <a th:href="@{/editar/{id}(id=${foto.id})}" class="btn-editar">
+                         Editar
+                    </a>
+                    <form th:action="@{/eliminar/{id}(id=${foto.id})}" method="post"
+                          style="display: inline;"
+                          onsubmit="return confirm('¿Estás seguro de eliminar este recuerdo?');">
+                        <button type="submit" class="btn-eliminar">
+                             Eliminar
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
